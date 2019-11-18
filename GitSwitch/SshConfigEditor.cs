@@ -31,7 +31,7 @@ namespace GitSwitch
         public void SetGitHubKeyFile(string sshKeyPath)
         {
             string unixSshKeyPath = WindowsToUnixPath(sshKeyPath);
-            string defaultSshConfig = "Host github.com\n\tIdentityFile " + unixSshKeyPath + "\n";
+            string defaultSshConfig = "Host *\n\tIdentityFile " + unixSshKeyPath + "\n";
 
             try
             {
@@ -60,7 +60,7 @@ namespace GitSwitch
                 output.Add(line);
                 if (Regex.IsMatch(line, @"^\s*Host\s+"))
                 {
-                    inGitHubSection = line.Contains("github.com");
+                    inGitHubSection = line.Contains("*");
                     if (inGitHubSection)
                     {
                         didFindGitHub = true;
@@ -84,9 +84,9 @@ namespace GitSwitch
         string WindowsToUnixPath(string path)
         {
             if (string.IsNullOrEmpty(path))
-                return string.Empty;
+                return "\"\"";
 
-            return Regex.Replace(path.Replace("\\", "/"), "^([A-Za-z]):", "/$1");
+            return "\"" + Regex.Replace(path.Replace("\\", "/"), "^([A-Za-z]):", "/$1") + "\"";
         }
     }
 }

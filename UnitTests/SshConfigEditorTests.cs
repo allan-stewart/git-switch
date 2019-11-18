@@ -26,7 +26,7 @@ namespace UnitTests
         [Test]
         public void SetGitHubKeyFile_WithMissingConfig_WritesANewFile()
         {
-            string expectedData = "Host github.com\n\tIdentityFile " + TestKeyUnixPath + "\n";
+            string expectedData = "Host *\n\tIdentityFile \"" + TestKeyUnixPath + "\"\n";
 
             mockFileHandler.Setup(mock => mock.ReadLines(It.IsAny<string>())).Throws(new FileNotFoundException());
             mockFileHandler.Setup(mock => mock.WriteFile(It.IsAny<string>(), It.IsAny<string>()))
@@ -45,7 +45,7 @@ namespace UnitTests
         [Test]
         public void SetGitHubKeyFile_WithMissingSshDirectory_WritesANewFile()
         {
-            string expectedData = "Host github.com\n\tIdentityFile " + TestKeyUnixPath + "\n";
+            string expectedData = "Host *\n\tIdentityFile \"" + TestKeyUnixPath + "\"\n";
 
             mockFileHandler.Setup(mock => mock.ReadLines(It.IsAny<string>())).Throws(new DirectoryNotFoundException());
             mockFileHandler.Setup(mock => mock.WriteFile(It.IsAny<string>(), It.IsAny<string>()))
@@ -65,7 +65,7 @@ namespace UnitTests
         public void SetGitHubKeyFile_WithMissingGitHubEntry_AddsConfig()
         {
             List<string> priorConfigLines = GetExampleConfigLines();
-            string expectedData = string.Join("\n", priorConfigLines) + "\nHost github.com\n\tIdentityFile " + TestKeyUnixPath + "\n";
+            string expectedData = string.Join("\n", priorConfigLines) + "\nHost *\n\tIdentityFile \"" + TestKeyUnixPath + "\"\n";
 
             mockFileHandler.Setup(mock => mock.ReadLines(It.IsAny<string>())).Returns(priorConfigLines);
             mockFileHandler.Setup(mock => mock.WriteFile(It.IsAny<string>(), It.IsAny<string>()))
@@ -146,7 +146,7 @@ namespace UnitTests
         public void SetGitHubKeyFile_HandlesEmptyConfigFile()
         {
             List<string> priorConfigLines = new List<string>();
-            string expectedData = "Host github.com\n\tIdentityFile " + TestKeyUnixPath + "\n";
+            string expectedData = "Host *\n\tIdentityFile \"" + TestKeyUnixPath + "\"\n";
 
             mockFileHandler.Setup(mock => mock.ReadLines(It.IsAny<string>())).Returns(priorConfigLines);
             mockFileHandler.Setup(mock => mock.WriteFile(It.IsAny<string>(), It.IsAny<string>()))
@@ -172,8 +172,8 @@ namespace UnitTests
 
             if (gitHubKey != null)
             {
-                lines.Add("Host github.com");
-                lines.Add("\tIdentityFile " + gitHubKey);
+                lines.Add("Host *");
+                lines.Add("\tIdentityFile \"" + gitHubKey + "\"");
                 lines.Add("");
             }
 
